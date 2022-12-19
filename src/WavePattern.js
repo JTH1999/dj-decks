@@ -6,6 +6,10 @@ function Waveform({ id, songs, track }) {
 
   const waveformRef = useRef();
 
+  // try adding the loaded track to list of use effect dependencies
+  // think this should make use effect re render when the track changes
+  // + need to figure out which one of the below works best lol, what a mess
+
   // if (waveformRef.current) {
   //   var wavesurfer = WaveSurfer.create({
   //     container: waveformRef.current,
