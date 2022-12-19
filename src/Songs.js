@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useRef } from "react";
-import angie from "./Angie.mp3";
 import { Howl, Howler } from "howler";
 
 function UploadButton(props) {
@@ -28,16 +27,22 @@ function UploadButton(props) {
   );
 }
 
-function SongTableRow(props) {
+function SongTableRow({ song, id, track1, setTrack1, setTrack1Playing }) {
   const handleClick = () => {
-    const sound = new Howl({
-      src: [
-        "http://commondatastorage.googleapis.com/codeskulptor-assets/Collision8-Bit.ogg",
-      ],
+    if (Object.keys(track1).length != 0) {
+      track1[Object.keys(track1)[0]].stop();
+      setTrack1Playing(false);
+    }
+    const url = URL.createObjectURL(song);
+    const newTrack1 = new Howl({
+      src: [url],
+      format: ["mp3"],
       html5: true,
       onload: function () {
-        console.log("LOADED");
-        sound.play();
+        const trackObj = {};
+        trackObj[id] = newTrack1;
+        setTrack1(trackObj);
+        URL.revokeObjectURL(newTrack1);
       },
       onloaderror: function (e, msg) {
         console.log(
@@ -46,54 +51,55 @@ function SongTableRow(props) {
         console.log("First argument error " + e);
       },
     });
-
-    console.log(sound);
-
-    // Fires when the sound finishes playing.
-    sound.on("end", function () {
-      console.log("Finished!");
-    });
   };
   return (
     <tr>
-      <td>{props.song.name}</td>
-      <td>{props.id}</td>
+      <td>{song.name}</td>
+      <td>{id}</td>
       <td>
-        <button onClick={handleClick}>Play</button>
+        <button onClick={handleClick}>load track 1</button>
       </td>
     </tr>
   );
 }
 
-function SongsTable(props) {
+function SongsTable({ songs, track1, setTrack1, setTrack1Playing }) {
   const rows = [];
-  for (const key in props.songs) {
-    console.log("got here");
-    rows.push(<SongTableRow song={props.songs[key]} id={key} />);
+  for (const key in songs) {
+    rows.push(
+      <SongTableRow
+        song={songs[key]}
+        id={key}
+        setTrack1={setTrack1}
+        track1={track1}
+        setTrack1Playing={setTrack1Playing}
+      />
+    );
   }
   return (
-    <table>
+    <table className="table">
       <thead>
         <tr>
           <th>Name</th>
           <th>Id</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>test</td>
-          <td>test</td>
-        </tr>
-        {rows}
-      </tbody>
+      <tbody>{rows}</tbody>
     </table>
   );
 }
 
-export default function Songs() {
+export default function Songs({
+  songs,
+  setSongs,
+  setTrack1,
+  setTrack2,
+  track1,
+  track2,
+  track1Playing,
+  setTrack1Playing,
+}) {
   // songs key value pairing of id and file
-  const [songs, setSongs] = useState({});
-
   const updateSongs = (files) => {
     let id;
 
@@ -122,10 +128,15 @@ export default function Songs() {
   };
 
   return (
-    <div>
+    <div className="songs-container">
       <h2>Songs</h2>
       <UploadButton handleFiles={updateSongs} />
-      <SongsTable songs={songs} />
+      <SongsTable
+        songs={songs}
+        setTrack1={setTrack1}
+        track1={track1}
+        setTrack1Playing={setTrack1Playing}
+      />
     </div>
   );
 }

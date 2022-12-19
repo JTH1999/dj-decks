@@ -47,6 +47,7 @@
 }
 
 .jogwheel {
+  margin-top: 2rem;
   width: 20rem;
   height: 20rem;
   border-radius: 100rem;
@@ -54,12 +55,74 @@
   justify-self: center;
 }
 
+.jogwheel.playing {
+  
+  animation-name: spin;
+  animation-duration: 5000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear; 
+}
+
 .play-button {
+  padding-top: 2rem;
   width: 8rem;
+  cursor: pointer;
+}
+
+.play-button-div {
+  display: flex;
+  justify-content: start;
 }
 
 .decks-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  
 }
 
+.c1 {
+  grid-column: 1;
+}
+
+.c2 {
+  grid-column: 2;
+}
+
+.r1 {
+  grid-row: 1;
+}
+
+.r2 {
+  grid-row: 2;
+}
+
+.songs-container {
+  padding-top: 2rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  
+}
+
+.table {
+  padding-top: 2rem;
+  justify-self: center;
+  text-align: left;
+  width: 60%;
+}
+
+body {
+  margin: 10rem;
+}
+
+.fill {
+  width: 100%;
+}
+
+@keyframes spin {
+  from {
+      transform:rotate(0deg);
+  }
+  to {
+      transform:rotate(360deg);
+  }
+}
